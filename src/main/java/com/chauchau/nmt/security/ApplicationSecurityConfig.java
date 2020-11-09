@@ -30,14 +30,13 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
   @Override
   protected void configure(HttpSecurity http) throws Exception {
     http
-        .csrf().disable() // TODO: I will teach this in detail in the next section
         .authorizeRequests()
         .antMatchers("/","index","/css/*","/js/*").permitAll()
         .antMatchers("/api/**").hasRole(STUDENT.name())
-        .antMatchers(DELETE,"management/api/**").hasAuthority(COURSE_WRITE.name())
-        .antMatchers(POST,"management/api/**").hasAuthority(COURSE_WRITE.name())
-        .antMatchers(PUT,"management/api/**").hasAuthority(COURSE_WRITE.name())
-        .antMatchers("management/api/**").hasAnyRole(ADMIN.name(), ADMINTRAINEE.name())
+        .antMatchers(DELETE,"management/api/**").hasAuthority(COURSE_WRITE.getPermission())
+        .antMatchers(POST,"management/api/**").hasAuthority(COURSE_WRITE.getPermission())
+        .antMatchers(PUT,"management/api/**").hasAuthority(COURSE_WRITE.getPermission())
+        .antMatchers(GET,"management/api/**").hasAnyRole(ADMIN.name(), ADMINTRAINEE.name())
         .anyRequest()
         .authenticated()
         .and()
