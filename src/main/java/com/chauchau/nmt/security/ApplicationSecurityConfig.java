@@ -3,6 +3,7 @@ package com.chauchau.nmt.security;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
@@ -18,6 +19,7 @@ import static org.springframework.http.HttpMethod.*;
 
 @Configuration
 @EnableWebSecurity
+@EnableGlobalMethodSecurity(prePostEnabled = true)
 public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
 
   private final PasswordEncoder passwordEncoder;
@@ -30,13 +32,14 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
   @Override
   protected void configure(HttpSecurity http) throws Exception {
     http
+        .csrf().disable() // TODO: I will teach this in detail in the next section
         .authorizeRequests()
         .antMatchers("/","index","/css/*","/js/*").permitAll()
         .antMatchers("/api/**").hasRole(STUDENT.name())
-        .antMatchers(DELETE,"management/api/**").hasAuthority(COURSE_WRITE.getPermission())
-        .antMatchers(POST,"management/api/**").hasAuthority(COURSE_WRITE.getPermission())
-        .antMatchers(PUT,"management/api/**").hasAuthority(COURSE_WRITE.getPermission())
-        .antMatchers(GET,"management/api/**").hasAnyRole(ADMIN.name(), ADMINTRAINEE.name())
+//        .antMatchers(DELETE,"management/api/**").hasAuthority(COURSE_WRITE.getPermission())
+//        .antMatchers(POST,"management/api/**").hasAuthority(COURSE_WRITE.getPermission())
+//        .antMatchers(PUT,"management/api/**").hasAuthority(COURSE_WRITE.getPermission())
+//        .antMatchers(GET,"management/api/**").hasAnyRole(ADMIN.name(), ADMINTRAINEE.name())
         .anyRequest()
         .authenticated()
         .and()
