@@ -12,7 +12,9 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 
+import static com.chauchau.nmt.security.ApplicationUserPermission.*;
 import static com.chauchau.nmt.security.ApplicationUserRole.*;
+import static org.springframework.http.HttpMethod.*;
 
 @Configuration
 @EnableWebSecurity
@@ -32,6 +34,10 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
         .authorizeRequests()
         .antMatchers("/","index","/css/*","/js/*").permitAll()
         .antMatchers("/api/**").hasRole(STUDENT.name())
+        .antMatchers(DELETE,"management/api/**").hasAuthority(COURSE_WRITE.name())
+        .antMatchers(POST,"management/api/**").hasAuthority(COURSE_WRITE.name())
+        .antMatchers(PUT,"management/api/**").hasAuthority(COURSE_WRITE.name())
+        .antMatchers("management/api/**").hasAnyRole(ADMIN.name(), ADMINTRAINEE.name())
         .anyRequest()
         .authenticated()
         .and()
